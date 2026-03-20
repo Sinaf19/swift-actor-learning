@@ -1,4 +1,4 @@
-class BankAccount: Equatable {
+actor BankAccount {
     let owner: String
     var balance: Double
 
@@ -17,9 +17,5 @@ class BankAccount: Equatable {
         } else {
             throw LedgerError.notEnoughFunds(available: balance, requested: amount)
         }
-    }
-
-    static func == (lhs: BankAccount, rhs: BankAccount) -> Bool {
-        return lhs.owner == rhs.owner && lhs.balance == rhs.balance
     }
 }

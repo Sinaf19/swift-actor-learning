@@ -9,7 +9,7 @@ struct SwiftActorPOC {
 
         for _ in 0..<50 {
             let task = Task.detached {
-                try? account.withdraw(5)
+                try? await account.withdraw(5)
             }
         tasks.append(task)
         }
@@ -17,6 +17,6 @@ struct SwiftActorPOC {
         for task in tasks {
             await task.value
         }
-        print("Final balance: \(account.balance)")
+        print("Final balance: \(await account.balance)")
     }
 }
