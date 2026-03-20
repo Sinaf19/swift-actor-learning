@@ -4,6 +4,6 @@
 @main
 struct SwiftActorPOC {
     static func main() {
-        print("Hello, world!")
+
     }
 }
