@@ -4,26 +4,38 @@
 @main
 struct SwiftActorPOC {
     static func main() async {
-        let account = BankAccount(owner: "Alice", balance: 1000.0)
+        let alice = BankAccount(owner: "Alice", balance: 1000.0)
+        let bob = BankAccount(owner: "Bob", balance: 500.0)
         let log = TransactionLog(transactions: [])
-        let transaction = Transaction(id: 1, amount: 3.0, outcome: Transaction.Outcome.success, attachment: NoteAttachment())
 
-        await log.record(transaction)
-
-        var tasks: [Task<()?, Never>] = []
-
-        for _ in 0 ..< 50 {
-            let task = Task.detached {
-                try? await account.withdraw(5)
+        await withTaskGroup(of: Void.self) {
+            group in
+            for i in 0 ..< 10 {
+                group.addTask {
+                    await transferFunds(amount: 150, from: alice, to: bob, log: log, id: i)
+                }
             }
-            tasks.append(task)
         }
 
-        print(account.describe())
-
-        for task in tasks {
-            await task.value
+        print("Alice's balance: \(await alice.balance)")
+        print("Bob's balance: \(await bob.balance)")
+        print("Total transfers: \(await log.count)")
+        print("Successes: \(await log.successCount)")
+        print("Failures: \(await log.failureCount)")
+        for tx in await log.all {
+            print("  [\(tx.id)] \(tx.amount) — \(tx.note)")
         }
-        print("Final balance: \(await account.balance)")
+    }
+}
+
+func transferFunds(amount: Double, from: BankAccount, to: BankAccount, log: TransactionLog, id: Int) async {
+    do {
+        try await from.withdraw(amount)
+        await to.deposit(amount)
+        await log.record(Transaction(id: id, amount: amount, outcome: .success))
+    } catch let error as LedgerError {
+        await log.record(Transaction(id: id, amount: amount, outcome: .failure(reason: error.description)))
+    } catch {
+        print("Error")
     }
 }

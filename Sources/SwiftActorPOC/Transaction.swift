@@ -10,7 +10,8 @@ struct Transaction: Sendable {
     var note: String {
         outcome.note
     }
-    let attachment: NoteAttachment
+    // To prove the Sendable requirement
+    // let attachment: NoteAttachment
 
     enum Outcome {
         case success
