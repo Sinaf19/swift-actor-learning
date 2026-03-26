@@ -11,6 +11,10 @@ actor BankAccount {
         balance += amount
     }
 
+    nonisolated func describe() -> String {
+        return "BankAccount(owner: \(owner))"
+    }
+
     func withdraw(_ amount: Double) throws {
         if amount < balance {
             balance -= amount

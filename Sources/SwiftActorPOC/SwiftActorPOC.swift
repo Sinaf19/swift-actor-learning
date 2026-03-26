@@ -14,6 +14,8 @@ struct SwiftActorPOC {
         tasks.append(task)
         }
 
+        print(account.describe())
+
         for task in tasks {
             await task.value
         }
