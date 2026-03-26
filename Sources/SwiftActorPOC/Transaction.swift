@@ -1,4 +1,6 @@
-struct Transaction {
+class NoteAttachment { var text = "" }
+
+struct Transaction: Sendable {
     let id: Int
     let amount: Double
     let outcome: Outcome
@@ -8,6 +10,7 @@ struct Transaction {
     var note: String {
         outcome.note
     }
+    let attachment: NoteAttachment
 
     enum Outcome {
         case success

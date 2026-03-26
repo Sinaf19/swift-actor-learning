@@ -5,13 +5,18 @@
 struct SwiftActorPOC {
     static func main() async {
         let account = BankAccount(owner: "Alice", balance: 1000.0)
+        let log = TransactionLog(transactions: [])
+        let transaction = Transaction(id: 1, amount: 3.0, outcome: Transaction.Outcome.success, attachment: NoteAttachment())
+
+        await log.record(transaction)
+
         var tasks: [Task<()?, Never>] = []
 
-        for _ in 0..<50 {
+        for _ in 0 ..< 50 {
             let task = Task.detached {
                 try? await account.withdraw(5)
             }
-        tasks.append(task)
+            tasks.append(task)
         }
 
         print(account.describe())
